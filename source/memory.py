@@ -29,8 +29,7 @@ class Memory:
         self.pending = {}
 
     def load(self, data, offset):
-        offset = offset % len(self)
-        idx = offset
+        idx = offset % len(self)
         for i in data:
             self.memory[idx] = i
             idx = (idx + 1) % len(self)
