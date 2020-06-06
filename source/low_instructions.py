@@ -33,12 +33,10 @@ def eval_AS(a, w):
         w = (w >> 1) + (extract(w, 31, 1) * 2**31)
     return w
 
-
 def eval_CMP(w1, w2):
-    return (w1 & w2) == w1
+    return w1 == w2
 
 def eval_LT(w1, w2):
     w1 = to_signed(w1, 32)
     w2 = to_signed(w2, 32)
     return w1 < w2
-
