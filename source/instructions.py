@@ -133,5 +133,5 @@ class BZ(AbstractInstruction):
 
 class DIE(AbstractInstruction):
     def exec(self, memory, process):
-        pass
+        return
 
