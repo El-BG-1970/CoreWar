@@ -9,12 +9,13 @@ class Machine:
     instruction = AbstractInstruction(None, None)
     operand = AbstractOperand(None)
 
-    def __init__(self, program1, program2):
+    def __init__(self, program1, program2, max = 0):
+        self.max = max
         self.memory = Memory(4095)
         if len(program1) >= 2048 or len(program2) >= 2048:
             raise ValueError
-        Memory.load(program1, 0)
-        Memory.load(program2, 2048)
+        self.memory.load(program1, 0)
+        self.memory.load(program2, 2048)
 
         self.player1 = deque()
         self.player2 = deque()
@@ -45,6 +46,13 @@ class Machine:
 
     def run(self):
         a = self.status()
+        if self.max > 0:
+            ct = 0
+            while not a and ct < self.max:
+                self.step()
+                a = self.status()
+                ct += 1
+            return a | 0
         while not a:
             self.step()
             a = self.status()
