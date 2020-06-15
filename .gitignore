@@ -8,6 +8,12 @@ corewar.py
 # jetbrains
 .idea/
 
+# compiled files
+*.cor
+
+# test files
+*.s
+
 # C extensions
 *.so
 
