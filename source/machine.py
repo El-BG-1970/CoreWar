@@ -20,8 +20,9 @@ class Machine:
         self.player1 = deque()
         self.player2 = deque()
         self.player1.appendleft(Process())
-        self.player2.appendleft(Process())
-        self.player2[0].PC = 2048
+        tmp = Process()
+        tmp.PC = 2048
+        self.player2.appendleft(tmp)
 
     def status(self):
         if len(self.player1) == 0 and len(self.player2) > 0:
@@ -43,6 +44,8 @@ class Machine:
                                 self.operand.create(i2[1][0], i2[1][1]),
                                 self.operand.create(i2[2][0], i2[2][1])).exec(self.memory, p2)
         self.memory.commit()
+        self.player1.appendleft(p1)
+        self.player2.appendleft(p2)
 
     def run(self):
         a = self.status()

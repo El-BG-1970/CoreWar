@@ -26,7 +26,7 @@ valid_operands = {
     'POP': (['@', '#', 'r'],[]),
     'PUSH': (['$', '@', '#', 'r'],[]),
     'JMP': (['$', '@', '#'],[]),
-    'BZ': (['$', '@', '#'],[]),
+    'BZ': (['$', '@', '#', 'r'],[]),
     'DIE': ([], [])
 }
 
@@ -203,5 +203,5 @@ if __name__ == "__main__":
     # assert program3 == [('MOV', ('$', 127), ('r', 1)), ('ADD', ('$', 4095), ('r', 1)), ('BZ' , ('$', 2), None), ('JMP', ('$', 4094), None), ('DIE', None, None), ], program3
 
 
-    with open('test2.cor', 'wb') as stream:
-        stream.write(assembler('test1.s'))
+    with open('test.cor', 'wb') as stream:
+        stream.write(assembler('test.s'))
