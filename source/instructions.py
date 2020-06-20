@@ -1,4 +1,5 @@
 from source.low_instructions import *
+from source.process import Process
 
 class AbstractInstruction:
     def __init__(self, operandA, operandB):
@@ -34,11 +35,20 @@ class FORK(AbstractInstruction):
         process.Z = 0
         process.PC = (process.PC + 1) % len(memory)
 
+        process_child = Process()
+        process_child.registers = process.registers
+        process_child.stack = process.stack
+        process_child.Z = 1
+        process_child.PC = process.PC + 1
+
+        return [process_child, process]
 
 class MOV(AbstractInstruction):
     def exec(self, memory, process):
         self.operandB.write(memory, process, self.operandA.read(memory, process))
         process.PC = (process.PC + 1) % len(memory)
+
+        return [process]
 
 
 class NOT(AbstractInstruction):
@@ -48,6 +58,8 @@ class NOT(AbstractInstruction):
         self.operandB.write(memory, process, tmp)
         process.PC = (process.PC + 1) % len(memory)
 
+        return [process]
+
 
 class AND(AbstractInstruction):
     def exec(self, memory, process):
@@ -55,6 +67,8 @@ class AND(AbstractInstruction):
         process.Z = tmp == 0
         self.operandB.write(memory, process, tmp)
         process.PC = (process.PC + 1) % len(memory)
+
+        return [process]
 
 
 class OR(AbstractInstruction):
@@ -64,6 +78,8 @@ class OR(AbstractInstruction):
         self.operandB.write(memory, process, tmp)
         process.PC = (process.PC + 1) % len(memory)
 
+        return [process]
+
 
 class LS(AbstractInstruction):
     def exec(self, memory, process):
@@ -71,6 +87,8 @@ class LS(AbstractInstruction):
         process.Z = tmp == 0
         self.operandB.write(memory, process, tmp)
         process.PC = (process.PC + 1) % len(memory)
+
+        return [process]
 
 
 class AS(AbstractInstruction):
@@ -80,6 +98,7 @@ class AS(AbstractInstruction):
         self.operandB.write(memory, process, tmp)
         process.PC = (process.PC + 1) % len(memory)
 
+        return [process]
 
 class ADD(AbstractInstruction):
     def exec(self, memory, process):
@@ -87,6 +106,8 @@ class ADD(AbstractInstruction):
         process.Z = tmp == 0
         self.operandB.write(memory, process, tmp)
         process.PC = (process.PC + 1) % len(memory)
+
+        return [process]
 
 
 class SUB(AbstractInstruction):
@@ -96,11 +117,15 @@ class SUB(AbstractInstruction):
         self.operandB.write(memory, process, tmp)
         process.PC = (process.PC + 1) % len(memory)
 
+        return [process]
+
 
 class CMP(AbstractInstruction):
     def exec(self, memory, process):
         process.Z = eval_CMP(self.operandA.read(memory, process), self.operandB.read(memory, process))
         process.PC = (process.PC + 1) % len(memory)
+
+        return [process]
 
 
 class LT(AbstractInstruction):
@@ -108,11 +133,15 @@ class LT(AbstractInstruction):
         process.Z = eval_LT(self.operandA.read(memory, process), self.operandB.read(memory, process))
         process.PC = (process.PC + 1) % len(memory)
 
+        return [process]
+
 
 class POP(AbstractInstruction):
     def exec(self, memory, process):
         self.operandA.write(memory, process, process.stack.pop())
         process.PC = (process.PC + 1) % len(memory)
+
+        return [process]
 
 
 class PUSH(AbstractInstruction):
@@ -120,18 +149,23 @@ class PUSH(AbstractInstruction):
         process.stack.push(self.operandA.read(memory, process))
         process.PC = (process.PC + 1) % len(memory)
 
+        return [process]
+
 
 class JMP(AbstractInstruction):
     def exec(self, memory, process):
         process.PC = (process.PC + self.operandA.read(memory, process)) % len(memory)
+
+        return [process]
 
 
 class BZ(AbstractInstruction):
     def exec(self, memory, process):
         process.PC = (process.PC + (self.operandA.read(memory, process) if process.Z else 1)) % len(memory)
 
+        return [process]
 
 class DIE(AbstractInstruction):
     def exec(self, memory, process):
-        return
+        return []
 

@@ -37,15 +37,17 @@ class Machine:
         p2 = self.player2.pop()
         i1 = idecode(self.memory[p1.PC])
         i2 = idecode(self.memory[p2.PC])
-        self.instruction.create(i1[0],
+        p1 = self.instruction.create(i1[0],
                                 self.operand.create(i1[1][0], i1[1][1]),
                                 self.operand.create(i1[2][0], i1[2][1])).exec(self.memory, p1)
-        self.instruction.create(i2[0],
+        p2 = self.instruction.create(i2[0],
                                 self.operand.create(i2[1][0], i2[1][1]),
                                 self.operand.create(i2[2][0], i2[2][1])).exec(self.memory, p2)
         self.memory.commit()
-        self.player1.appendleft(p1)
-        self.player2.appendleft(p2)
+        for i in p1:
+            self.player1.appendleft(i)
+        for i in p2:
+            self.player2.appendleft(i)
 
     def run(self):
         a = self.status()
