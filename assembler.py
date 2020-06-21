@@ -99,7 +99,8 @@ def parse_operand(oprd, index, labels):
             # operand_value = 2**12 + operand_value
     else: #operand value is a label
 ##how do you find the value??        
-        operand_value = labels[operand_value] % (2**12)
+        operand_value = (labels[operand_value] - index)
+        operand_value = (operand_value % (2**12)) if operand_value > 0 else of_signed(operand_value, 12)
     
     return (operand_mode, operand_value)
         
