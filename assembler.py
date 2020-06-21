@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+import sys
+import os
+
 def to_signed(w, n):
     return w if (w&2**(n-1) == 0) else w - 2**(n)
 
@@ -176,30 +179,22 @@ def assembler(filename):
     
                
 if __name__ == "__main__":
-    program0 = r'''
-            MOV $127 r1  ; Initialize r1 to 127
-
-    &loop:  ADD $-1 r1   ; Decrement  r1 by 1
-            BZ  $&end    ; If r1 is 0, move to end of program
-            JMP $&loop   ; Otherwise, jump to loop
-
-    &end:   DIE
-    '''
-
-    program0 = program0.splitlines()
-    program1 = [strip_comment(x) for x in program0]
-    program1 = [x for x in program1 if x is not None]
-    #assert program1 == ['MOV $127 r1', '&loop:   ADD $-1 r1', 'BZ  $&end', 'JMP $&loop', '&end:     DIE'], program1
-
-    labels = {}
-    program2 = [extract_label(x, i, labels) for i, x in enumerate(program1)]
-    assert labels == { '&loop': 1, '&end': 4 }, labels
-    assert program2 == ['MOV $127 r1', 'ADD $-1 r1', 'BZ  $&end', 'JMP $&loop', 'DIE'], program2
-
-
-    program3 = [parse_instruction(x, i, labels) for i, x in enumerate(program2)]
-    # assert program3 == [('MOV', ('$', 127), ('r', 1)), ('ADD', ('$', 4095), ('r', 1)), ('BZ' , ('$', 2), None), ('JMP', ('$', 4094), None), ('DIE', None, None), ], program3
-
-
-    with open('test.cor', 'wb') as stream:
-        stream.write(assembler('test.s'))
+    args = [str(i) for i in sys.argv[1:]]
+    if len(args) == 0:
+        print("syntax: python assembler.py <source> <executable>")
+        sys.exit(-1)
+    elif len(args) == 1:
+        if not os.path.exists(args[0]):
+            print('invalid source file')
+            sys.exit(-1)
+        with open(args[0].split('.')[0]+'.cor', 'wb') as stream:
+            stream.write(assembler(args[0]))
+    elif len(args) == 2:
+        if not os.path.exists(args[0]):
+            print('invalid source file')
+            sys.exit(-1)
+        with open(args[1], 'wb') as stream:
+            stream.write(assembler(args[0]))
+    else:
+        print("too many options")
+        sys.exit(-1)
