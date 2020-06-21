@@ -25,7 +25,7 @@ valid_operands = {
     'LT': (['$', '@', '#', 'r'],['$', '@', '#', 'r']),
     'POP': (['@', '#', 'r'],[]),
     'PUSH': (['$', '@', '#', 'r'],[]),
-    'JMP': (['$', '@', '#'],[]),
+    'JMP': (['$', '@', '#', 'r'],[]),
     'BZ': (['$', '@', '#', 'r'],[]),
     'DIE': ([], [])
 }
@@ -95,10 +95,7 @@ def parse_operand(oprd, index, labels):
     
     if is_integer(operand_value):#operand value is an integer
         operand_value = int(oprd[1:]) % (2**12)
-        # if  operand_value <0:
-            # operand_value = 2**12 + operand_value
     else: #operand value is a label
-##how do you find the value??        
         operand_value = (labels[operand_value] - index)
         operand_value = (operand_value % (2**12)) if operand_value > 0 else of_signed(operand_value, 12)
     
